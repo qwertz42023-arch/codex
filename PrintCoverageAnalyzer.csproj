@@ -5,6 +5,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
+    <AssemblyName>PrintCoverageAnalyzer</AssemblyName>
+    <RootNamespace>PrintCoverageAnalyzer</RootNamespace>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
