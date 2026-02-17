@@ -20,12 +20,12 @@ Gespeicherte Papiersorten liegen pro Benutzer in:
 Voraussetzung: .NET 8 SDK auf einem Build-PC.
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\tools\publish-windows.ps1 -Runtime win-x64 -Version 1.1.0
+powershell -ExecutionPolicy Bypass -File .\tools\publish-windows.ps1 -Runtime win-x64 -Version 1.1.1
 ```
 
 Ergebnis:
 
-- `dist/package/PrintCoverageAnalyzer-win-x64-v1.1.0.zip`
+- `dist/package/PrintCoverageAnalyzer-win-x64-v1.1.1.zip`
 
 Enthalten:
 

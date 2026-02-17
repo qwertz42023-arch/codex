@@ -1,6 +1,6 @@
 using PdfiumViewer;
-using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using ImageSharpImage = SixLabors.ImageSharp.Image;
 
 namespace PrintCoverageAnalyzer;
 
@@ -11,13 +11,13 @@ public static class InputLoader
         ".jpg", ".jpeg", ".png", ".tif", ".tiff", ".bmp", ".webp"
     };
 
-    public static IEnumerable<(string Name, Image<Rgba32> Image)> Load(string path, CoverageOptions options)
+    public static IEnumerable<(string Name, ImageSharpImage<Rgba32> Image)> Load(string path, CoverageOptions options)
     {
         string ext = Path.GetExtension(path);
 
         if (RasterExtensions.Contains(ext))
         {
-            yield return (Path.GetFileName(path), Image.Load<Rgba32>(path));
+            yield return (Path.GetFileName(path), ImageSharpImage.Load<Rgba32>(path));
             yield break;
         }
 
@@ -34,7 +34,7 @@ public static class InputLoader
         throw new NotSupportedException($"Unsupported format: {ext}");
     }
 
-    private static IEnumerable<(string Name, Image<Rgba32> Image)> LoadPdf(string pdfPath, int dpi)
+    private static IEnumerable<(string Name, ImageSharpImage<Rgba32> Image)> LoadPdf(string pdfPath, int dpi)
     {
         using var document = PdfDocument.Load(pdfPath);
         for (int i = 0; i < document.PageCount; i++)
@@ -48,7 +48,7 @@ public static class InputLoader
             bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
             ms.Position = 0;
 
-            yield return ($"{Path.GetFileName(pdfPath)}#page-{i + 1}", Image.Load<Rgba32>(ms));
+            yield return ($"{Path.GetFileName(pdfPath)}#page-{i + 1}", ImageSharpImage.Load<Rgba32>(ms));
         }
     }
 }

@@ -2,7 +2,7 @@ param(
     [ValidateSet('win-x64','win-arm64')]
     [string]$Runtime = 'win-x64',
     [string]$Configuration = 'Release',
-    [string]$Version = '1.1.0'
+    [string]$Version = '1.1.1'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -13,7 +13,7 @@ $packageDir = Join-Path $repoRoot "dist/package"
 $appDir = Join-Path $packageDir "PrintCoverageAnalyzer-$Runtime"
 
 Write-Host "Publishing $Runtime ($Configuration) ..."
-dotnet publish (Join-Path $repoRoot 'PrintCoverageAnalyzer.csproj') `
+& dotnet publish (Join-Path $repoRoot 'PrintCoverageAnalyzer.csproj') `
   -c $Configuration `
   -r $Runtime `
   --self-contained true `
@@ -23,12 +23,21 @@ dotnet publish (Join-Path $repoRoot 'PrintCoverageAnalyzer.csproj') `
   /p:Version=$Version `
   -o $publishDir
 
+if ($LASTEXITCODE -ne 0) {
+    throw "dotnet publish fehlgeschlagen (ExitCode=$LASTEXITCODE)."
+}
+
+$exePath = Join-Path $publishDir 'PrintCoverageAnalyzer.exe'
+if (-not (Test-Path $exePath)) {
+    throw "EXE nicht gefunden nach Publish: $exePath"
+}
+
 if (Test-Path $appDir) {
     Remove-Item -Recurse -Force $appDir
 }
 New-Item -ItemType Directory -Path $appDir | Out-Null
 
-Copy-Item (Join-Path $publishDir 'PrintCoverageAnalyzer.exe') $appDir
+Copy-Item $exePath $appDir
 Copy-Item (Join-Path $repoRoot 'tools/Run-Analyse.bat') $appDir
 Copy-Item (Join-Path $repoRoot 'tools/Install-PrintCoverageAnalyzer.ps1') $appDir
 Copy-Item (Join-Path $repoRoot 'README.md') $appDir
